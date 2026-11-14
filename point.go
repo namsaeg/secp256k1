@@ -125,6 +125,10 @@ func isOnCurve(x, y fieldElem) bool {
 	return y.Square().Equal(x.Cube().Add(curveB))
 }
 
+func N() *big.Int {
+	return new(big.Int).Set(curveN)
+}
+
 func ScalarBaseMul(scalar *big.Int) Point {
 	return generator.ScalarMul(scalar)
 }
