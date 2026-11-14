@@ -118,13 +118,6 @@ func (p Point) HasEvenY() bool {
 	return p.isFinite && !p.y.IsOdd()
 }
 
-func (p Point) String() string {
-	if !p.isFinite {
-		return "Point(infinity)"
-	}
-	return fmt.Sprintf("Point(0x%064x, 0x%064x)", p.x.n(), p.y.n())
-}
-
 func isOnCurve(x, y fieldElem) bool {
 	return y.Square().Equal(x.Cube().Add(curveB))
 }

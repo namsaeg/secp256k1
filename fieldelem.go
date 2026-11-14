@@ -60,18 +60,6 @@ func (a fieldElem) Inv() (r fieldElem, ok bool) {
 	return fieldElem{num: num}, true
 }
 
-func (a fieldElem) Pow(e *big.Int) fieldElem {
-	if a.n().Sign() == 0 {
-		if e.Sign() == 0 {
-			return fieldElem{num: big.NewInt(1)}
-		}
-		return fieldElem{}
-	}
-	reduced := new(big.Int).Mod(e, fieldPMinus1)
-	num := new(big.Int).Exp(a.n(), reduced, fieldP)
-	return fieldElem{num: num}
-}
-
 func (a fieldElem) Square() fieldElem {
 	num := new(big.Int).Mul(a.n(), a.n())
 	num.Mod(num, fieldP)
@@ -102,10 +90,6 @@ func (a fieldElem) IsZero() bool {
 
 func (a fieldElem) IsOdd() bool {
 	return a.n().Bit(0) != 0
-}
-
-func (a fieldElem) String() string {
-	return fmt.Sprintf("fieldElem(0x%064x)", a.n())
 }
 
 func P() *big.Int {
