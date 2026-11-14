@@ -107,3 +107,7 @@ func (a fieldElem) IsOdd() bool {
 func (a fieldElem) String() string {
 	return fmt.Sprintf("fieldElem(0x%064x)", a.n())
 }
+
+func P() *big.Int {
+	return new(big.Int).Set(fieldP)
+}

@@ -114,6 +114,10 @@ func (p Point) Equal(q Point) bool {
 	return p.x.Equal(q.x) && p.y.Equal(q.y)
 }
 
+func (p Point) HasEvenY() bool {
+	return p.isFinite && !p.y.IsOdd()
+}
+
 func (p Point) String() string {
 	if !p.isFinite {
 		return "Point(infinity)"
@@ -125,12 +129,31 @@ func isOnCurve(x, y fieldElem) bool {
 	return y.Square().Equal(x.Cube().Add(curveB))
 }
 
-func N() *big.Int {
-	return new(big.Int).Set(curveN)
+func LiftX(x *big.Int) (Point, error) {
+	fx, err := newFieldElem(x)
+	if err != nil {
+		return Point{}, fmt.Errorf("x 좌표: %w", err)
+	}
+	fy, ok := fx.Cube().Add(curveB).Sqrt()
+	if !ok {
+		return Point{}, fmt.Errorf("%w: x = %x", ErrNotOnCurve, x)
+	}
+	if fy.IsOdd() {
+		fy = fy.Neg()
+	}
+	return Point{
+		x:        fx,
+		y:        fy,
+		isFinite: true,
+	}, nil
 }
 
 func ScalarBaseMul(scalar *big.Int) Point {
 	return generator.ScalarMul(scalar)
+}
+
+func N() *big.Int {
+	return new(big.Int).Set(curveN)
 }
 
 func mustHex(s string) *big.Int {
