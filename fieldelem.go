@@ -5,10 +5,7 @@ import (
 	"math/big"
 )
 
-var (
-	fieldP       = mustHex("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f")
-	fieldPMinus1 = new(big.Int).Sub(fieldP, big.NewInt(1))
-)
+var fieldP = mustHex("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f")
 
 type fieldElem struct {
 	num *big.Int
@@ -19,6 +16,10 @@ func newFieldElem(num *big.Int) (fieldElem, error) {
 		return fieldElem{}, fmt.Errorf("%w: %x", ErrFieldRange, num)
 	}
 	return fieldElem{num: new(big.Int).Set(num)}, nil
+}
+
+func (a fieldElem) Num() *big.Int {
+	return new(big.Int).Set(a.num)
 }
 
 func (a fieldElem) n() *big.Int {
@@ -90,6 +91,10 @@ func (a fieldElem) IsZero() bool {
 
 func (a fieldElem) IsOdd() bool {
 	return a.n().Bit(0) != 0
+}
+
+func (a fieldElem) String() string {
+	return fmt.Sprintf("fieldElem(0x%x)", a.n())
 }
 
 func P() *big.Int {
